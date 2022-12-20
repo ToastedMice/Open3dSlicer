@@ -41,7 +41,6 @@ class Load:
                     name = words[1]
 
                 if words[0] == 'facet':
-                    center=[0.0, 0.0,0.0]
                     self.points = []
                     normal = (eval(words[2]), eval(words[3]), eval(words[4]))
 
