@@ -63,26 +63,21 @@ colours = (
     (0, 1, 1),
 )
 mesh = Loader.Load()
-mesh.load("C:/Users/aidan/Downloads/Cube.stl")
-#mesh.load("C:/Users/aidan/Downloads/CubeTextAsci.stl")
+#mesh.load("C:/Users/aidan/Downloads/Cube.stl")
+mesh.load("C:/Users/aidan/Downloads/CubeTextAsci.stl")
 vertices = mesh.vertices
 surfaces = mesh.triangle
-normal = mesh.normal
+print(vertices)
 
 def Cube():
     glBegin(GL_TRIANGLES)
-    y = 0
     for surface in surfaces:
         x = 0
 
-        glNormal3fv((normal[y]))
         for vertex in surface:
             x += 1
             glColor3fv(colours[x])
-            
-            
             glVertex3fv(vertices[vertex])
-        y =+ 1
     glEnd()
 
     #glBegin(GL_LINES)
@@ -92,21 +87,21 @@ def Cube():
     #glEnd()
 
 def createBuffer(vertices):
-    bufferData = (ctypes.c_float*len(vertices))(*vertices)
-    bufferSize = len(vertices)*4
+    bufferdata = (ctypes.c_float*len(vertices))(*vertices) # float buffer
+    buffersize = len(vertices)*4                           # buffer size in bytes 
 
     vbo = glGenBuffers(1)
     glBindBuffer(GL_ARRAY_BUFFER, vbo)
-    glBufferData(GL_ARRAY_BUFFER, bufferSize, bufferData, GL_STATIC_DRAW)
+    glBufferData(GL_ARRAY_BUFFER, buffersize, bufferdata, GL_STATIC_DRAW) 
     glBindBuffer(GL_ARRAY_BUFFER, 0)
     return vbo
 
-def drawBuffer(vbo, numberOfVertices):
+def drawBuffer(vbo, noOfVertices):
     glBindBuffer(GL_ARRAY_BUFFER, vbo)
     glEnableClientState(GL_VERTEX_ARRAY)
-    glVertexPointer(3, GL_FLOAT, 0, numberOfVertices)
+    glVertexPointer(3, GL_FLOAT, 0, None)
 
-    glDrawArrays(GL_POINTS, 0, numberOfVertices)        
+    glDrawArrays(GL_POINTS, 0, noOfVertices)
 
     glDisableClientState(GL_VERTEX_ARRAY)
     glBindBuffer(GL_ARRAY_BUFFER, 0)

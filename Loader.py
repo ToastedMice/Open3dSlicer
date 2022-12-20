@@ -18,7 +18,7 @@ class Load:
             words = line.split()
         except:
             self.loadBinaryStl(filename)
-
+        self.loadTextStl(filename)
         
 
         #if len(words) > 0:
@@ -31,6 +31,7 @@ class Load:
 
 
     def loadTextStl(self, filename):
+        print("ASCII")
         fp = open(filename, 'r')
         
         for line in fp.readlines():
@@ -41,19 +42,22 @@ class Load:
                     name = words[1]
 
                 if words[0] == 'facet':
+                    center=[0.0, 0.0,0.0]
                     self.points = []
                     normal = (eval(words[2]), eval(words[3]), eval(words[4]))
 
                 if words[0] == 'vertex':
                     #final list of vertices
-                    self.vertices.append((eval(words[1]), eval(words[2]), eval(words[3])))
+                    self.vertices.append(eval(words[1]))
+                    self.vertices.append(eval(words[2]))
+                    self.vertices.append(eval(words[3]))
 
                     #temporary storage of specific points for indexing in the verticies list 
                     self.points.append((eval(words[1]), eval(words[2]), eval(words[3]))) 
 
                 if words[0] == 'endloop':
                     #for OpenGL to create the triangle, we get the index of the vertex in the list vertices
-                    self.triangle.append((self.vertices.index(self.points[0]), self.vertices.index(self.points[1]), self.vertices.index(self.points[2]))) 
+                    #self.triangle.append((self.vertices.index(self.points[0]), self.vertices.index(self.points[1]), self.vertices.index(self.points[2]))) 
                     self.triangle.append((len(self.vertices)-3, len(self.vertices)-2, len(self.vertices)-1)) 
                     print(self.vertices[-1])
 
