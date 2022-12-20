@@ -63,8 +63,8 @@ colours = (
     (0, 1, 1),
 )
 mesh = Loader.Load()
-#mesh.load("C:/Users/aidan/Downloads/Cube.stl")
-mesh.load("C:/Users/aidan/Downloads/CubeTextAsci.stl")
+mesh.load("C:/Users/aidan/Downloads/Cube.stl")
+#mesh.load("C:/Users/aidan/Downloads/CubeTextAsci.stl")
 vertices = mesh.vertices
 surfaces = mesh.triangle
 print(vertices)
@@ -88,6 +88,7 @@ def Cube():
 
 def createBuffer(vertices):
     bufferdata = (ctypes.c_float*len(vertices))(*vertices) # float buffer
+    
     buffersize = len(vertices)*4                           # buffer size in bytes 
 
     vbo = glGenBuffers(1)
@@ -101,7 +102,7 @@ def drawBuffer(vbo, noOfVertices):
     glEnableClientState(GL_VERTEX_ARRAY)
     glVertexPointer(3, GL_FLOAT, 0, None)
 
-    glDrawArrays(GL_POINTS, 0, noOfVertices)
+    glDrawArrays(GL_TRIANGLES, 0, noOfVertices)
 
     glDisableClientState(GL_VERTEX_ARRAY)
     glBindBuffer(GL_ARRAY_BUFFER, 0)
@@ -147,8 +148,7 @@ def main():
                     glTranslatef(0, -0.5, 0)
         if pygame.mouse.get_pressed() == (1, 0, 0):
             mousePosition = pygame.mouse.get_rel()
-            print(mousePosition)
-            glRotatef(mousePosition[0]/3, 0, 0, 1)
+            glRotatef(mousePosition[0]/3*-1, 0, 0, 1)
             glRotatef(mousePosition[1]/3, 1, 0, 0)
 
         else:

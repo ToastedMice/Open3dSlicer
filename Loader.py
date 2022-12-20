@@ -11,14 +11,17 @@ class Load:
         #data = file.read(80) #80 bytes is enough to determin if the file is binary
         #type = data[0:5]
         #file.close()
-
+        Ascii = True
         fp = open(filename, 'r')
         try:
             line = fp.readline()
             words = line.split()
+
         except:
             self.loadBinaryStl(filename)
-        self.loadTextStl(filename)
+            Ascii = False
+        if(Ascii == True):
+            self.loadTextStl(filename)
         
 
         #if len(words) > 0:
@@ -51,9 +54,7 @@ class Load:
                     self.vertices.append(eval(words[1]))
                     self.vertices.append(eval(words[2]))
                     self.vertices.append(eval(words[3]))
-
-                    #temporary storage of specific points for indexing in the verticies list 
-                    self.points.append((eval(words[1]), eval(words[2]), eval(words[3]))) 
+                    
 
                 if words[0] == 'endloop':
                     #for OpenGL to create the triangle, we get the index of the vertex in the list vertices
@@ -83,20 +84,32 @@ class Load:
                   
                 p=fp.read(12)
                 if len(p)==12:
-                    p1=struct.unpack('f',p[0:4])[0],struct.unpack('f',p[4:8])[0],struct.unpack('f',p[8:12])[0]
+                    p1 = struct.unpack('f',p[0:4])[0]
+                    self.vertices.append(p1)
+                    p1 = struct.unpack('f',p[8:12])[0]
+                    self.vertices.append(p1)
+                    p1= struct.unpack('f',p[4:8])[0]
+                    self.vertices.append(p1)
 
                 p=fp.read(12)
                 if len(p)==12:
-                    p2=struct.unpack('f',p[0:4])[0],struct.unpack('f',p[4:8])[0],struct.unpack('f',p[8:12])[0]
+                    p2 = struct.unpack('f',p[0:4])[0]
+                    self.vertices.append(p2)
+                    p2 = struct.unpack('f',p[8:12])[0]
+                    self.vertices.append(p2)
+                    p2= struct.unpack('f',p[4:8])[0]
+                    self.vertices.append(p2)
 
                 p=fp.read(12)
                 if len(p)==12:
-                    p3=struct.unpack('f',p[0:4])[0],struct.unpack('f',p[4:8])[0],struct.unpack('f',p[8:12])[0]
+                    p3 = struct.unpack('f',p[0:4])[0]
+                    self.vertices.append(p3)
+                    p3 = struct.unpack('f',p[8:12])[0]
+                    self.vertices.append(p3)
+                    p3= struct.unpack('f',p[4:8])[0]
+                    self.vertices.append(p3)
 
-                self.vertices.append(p1)
-                self.vertices.append(p2)
-                self.vertices.append(p3)
-                self.normal.append(n)
+                #self.normal.append(n)
 
                 self.triangle.append((len(self.vertices)-3, len(self.vertices)-2, len(self.vertices)-1))
 
