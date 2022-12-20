@@ -63,8 +63,8 @@ colours = (
     (0, 1, 1),
 )
 mesh = Loader.Load()
-mesh.load("C:/Users/aidan/Downloads/Cube.stl")
-#mesh.load("C:/Users/aidan/Downloads/CubeTextAsci.stl")
+#mesh.load("C:/Users/aidan/Downloads/Cube.stl")
+mesh.load("C:/Users/aidan/Downloads/CubeTextAsci.stl")
 vertices = mesh.vertices
 surfaces = mesh.triangle
 print(vertices)
@@ -86,10 +86,10 @@ def Cube():
     #        glVertex3fv(vertices[vertex])
     #glEnd()
 
-def createBuffer(vertices):
-    bufferdata = (ctypes.c_float*len(vertices))(*vertices) # float buffer
+def createBuffer(attributes):
+    bufferdata = (ctypes.c_float*len(attributes))(*attributes) # float buffer
     
-    buffersize = len(vertices)*4                           # buffer size in bytes 
+    buffersize = len(attributes)*4                           # buffer size in bytes 
 
     vbo = glGenBuffers(1)
     glBindBuffer(GL_ARRAY_BUFFER, vbo)
@@ -99,12 +99,20 @@ def createBuffer(vertices):
 
 def drawBuffer(vbo, noOfVertices):
     glBindBuffer(GL_ARRAY_BUFFER, vbo)
+
+    stride = 6*4 # (24 bytes) : [x,y,z,r,g,b] * sizeof(float) -> (4bytes)
+
     glEnableClientState(GL_VERTEX_ARRAY)
-    glVertexPointer(3, GL_FLOAT, 0, None)
+    glVertexPointer(3, GL_FLOAT, stride, None)
+    
+    glEnableClientState(GL_COLOR_ARRAY)
+    offset = 3*4 # (12 bytes) : the rgb starts afer the 3 coords x,y,z * sizeof(float) -> (4bytes) representing the size of the x,y,z
+    glColorPointer(3, GL_FLOAT, stride, ctypes.c_void_p(offset))
 
     glDrawArrays(GL_TRIANGLES, 0, noOfVertices)
 
     glDisableClientState(GL_VERTEX_ARRAY)
+    glDisableClientState(GL_COLOR_ARRAY)
     glBindBuffer(GL_ARRAY_BUFFER, 0)
 
 
@@ -120,15 +128,18 @@ def main():
     glEnable(GL_CULL_FACE)
     glCullFace(GL_BACK)
 
+    #glEnable(GL_DEPTH_TEST)
+    #glDepthFunc(GL_LESS)
+
     glTranslatef(0, 10, -70)
 
     glRotatef(90, 10, 0, 0)
 
+   
+    numberOfPoints  = len(vertices) // 6 # 12 components per attrribute tuple
     bufferObj = createBuffer(vertices)
-    numberOfPoints  = len(vertices) // 3
-    
+
     mousePosition = pygame.mouse.get_rel()
-    lastPressed = False
 
     while True:
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
@@ -149,7 +160,7 @@ def main():
         if pygame.mouse.get_pressed() == (1, 0, 0):
             mousePosition = pygame.mouse.get_rel()
             glRotatef(mousePosition[0]/3*-1, 0, 0, 1)
-            glRotatef(mousePosition[1]/3, 1, 0, 0)
+            #glRotatef(mousePosition[1]/3, 0, 0, 0)
 
         else:
             mousePosition = pygame.mouse.get_rel()

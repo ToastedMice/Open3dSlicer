@@ -54,14 +54,17 @@ class Load:
                     self.vertices.append(eval(words[1]))
                     self.vertices.append(eval(words[2]))
                     self.vertices.append(eval(words[3]))
+                    self.vertices.append(0.00000000000000)
+                    self.vertices.append(0.00000000000000)
+                    self.vertices.append(1.00000000000000)
                     
 
                 if words[0] == 'endloop':
                     #for OpenGL to create the triangle, we get the index of the vertex in the list vertices
                     #self.triangle.append((self.vertices.index(self.points[0]), self.vertices.index(self.points[1]), self.vertices.index(self.points[2]))) 
                     self.triangle.append((len(self.vertices)-3, len(self.vertices)-2, len(self.vertices)-1)) 
-                    print(self.vertices[-1])
-
+                    
+                    
     def loadBinaryStl(self, filename):
         fp = open(filename, 'rb')
         header = fp.read(80)
@@ -80,16 +83,15 @@ class Load:
             try:
                 p = fp.read(12)
                 if len(p) == 12:
-                    n=struct.unpack('f',p[0:4])[0],struct.unpack('f',p[4:8])[0],struct.unpack('f',p[8:12])[0]
+                    self.normal.append(struct.unpack('f',p[0:4])[0])
+                    self.normal.append(struct.unpack('f',p[4:8])[0])
+                    self.normal.append(struct.unpack('f',p[8:12])[0])
                   
                 p=fp.read(12)
                 if len(p)==12:
-                    p1 = struct.unpack('f',p[0:4])[0]
-                    self.vertices.append(p1)
-                    p1 = struct.unpack('f',p[8:12])[0]
-                    self.vertices.append(p1)
-                    p1= struct.unpack('f',p[4:8])[0]
-                    self.vertices.append(p1)
+                    self.vertices.append(struct.unpack('f',p[0:4])[0])
+                    self.vertices.append(struct.unpack('f',p[8:12])[0])
+                    self.vertices.append(struct.unpack('f',p[4:8])[0])
 
                 p=fp.read(12)
                 if len(p)==12:
@@ -109,8 +111,9 @@ class Load:
                     p3= struct.unpack('f',p[4:8])[0]
                     self.vertices.append(p3)
 
-                #self.normal.append(n)
-
+                self.vertices.append(0.00000000000000)
+                self.vertices.append(0.00000000000000)
+                self.vertices.append(1.00000000000000)
                 self.triangle.append((len(self.vertices)-3, len(self.vertices)-2, len(self.vertices)-1))
 
                 count+=1
@@ -118,6 +121,18 @@ class Load:
 
                 if len(p)==0:
                     break
-            except EOFError:
+            except EOFError: #when file is finished
                 break
+            
+        self.vertices.pop(0)
+        self.vertices.pop(1)
+        self.vertices.pop(2)
+        self.vertices.pop(3)
+        self.vertices.pop(0)
+        self.vertices.pop(5)
+        self.vertices.pop(6)
+        self.vertices.pop(7)
+        self.vertices.pop(8)
+        self.vertices.pop(9)
+        self.vertices.pop(10)
         fp.close()
