@@ -76,7 +76,7 @@ glBufferData(GL_ARRAY_BUFFER, ctypes.sizeof(triangle_vertices), triangle_vertice
 #gluPerspective(90, float((800/600)), 0.1, 1000.0)
 
 glEnable(GL_DEPTH_TEST)
-glShadeModel(GL_FLAT)
+glShadeModel(GL_SMOOTH)
 
 # Create the projection matrix
 projection = glm.perspective(glm.radians(45.0), 800/600, 0.1, 100.0)
