@@ -1,5 +1,4 @@
 import struct
-import numpy
 
 class Load:
     def __init__(self) -> None:
@@ -17,7 +16,6 @@ class Load:
         try:
             line = fp.readline()
             words = line.split()
-
         except:
             self.loadBinaryStl(filename)
             Ascii = False
@@ -37,36 +35,36 @@ class Load:
     def loadTextStl(self, filename):
         print("ASCII")
         fp = open(filename, 'r')
-        normal = []
+        self.normal = []
         for line in fp.readlines():
             words = line.split()
             if len(words) > 0:
                 
-                if words[0] == 'solid':
-                    name = words[1]
-
-                #if words[0] == 'facet':
-                #    center=[0.0, 0.0,0.0]
-                #    self.points = []
-                #    normal.append(eval(words[2]))
-                #    normal.append(eval(words[3]))
-                #    normal.append(eval(words[4]))
+                if words[0] == 'facet':
+                    #name = words[1]
+                    self.normal.append(eval(words[2]))
+                    self.normal.append(eval(words[3]))
+                    self.normal.append(eval(words[4]))
 
                 if words[0] == 'vertex':
                     #final list of vertices
                     self.vertices.append(eval(words[1]))
                     self.vertices.append(eval(words[2]))
                     self.vertices.append(eval(words[3]))
-                    self.vertices.append(0.00000000000000)
-                    self.vertices.append(0.00000000000000)
                     self.vertices.append(1.00000000000000)
+                    self.vertices.append(1.00000000000000)
+                    self.vertices.append(1.00000000000000)
+                    self.vertices.append(1.00000000000000)
+                    self.vertices.append(self.normal[0])
+                    self.vertices.append(self.normal[1])
+                    self.vertices.append(self.normal[2])
                     
 
                 if words[0] == 'endloop':
                     #for OpenGL to create the triangle, we get the index of the vertex in the list vertices
                     #self.triangle.append((self.vertices.index(self.points[0]), self.vertices.index(self.points[1]), self.vertices.index(self.points[2]))) 
                     #self.triangle.append((len(self.vertices)-3, len(self.vertices)-2, len(self.vertices)-1)) 
-                    normal = []
+                    self.normal = []
                     
                     
     def loadBinaryStl(self, filename):

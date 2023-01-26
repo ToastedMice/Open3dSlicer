@@ -11,7 +11,7 @@ import Loader
 pygame.init()
 
 # Set the screen size
-screen = pygame.display.set_mode((800, 600), pygame.OPENGL | pygame.DOUBLEBUF | pygame.RESIZABLE)
+screen = pygame.display.set_mode((1920, 1080), pygame.OPENGL | pygame.DOUBLEBUF | pygame.RESIZABLE)
 
 clock = pygame.time.Clock()
 
@@ -41,9 +41,10 @@ in vec4 v_color;
 in vec3 v_normal;
 void main() {
     vec4 normalizedv_normal = normalize(vec4(v_normal, 0.0));
-    vec4 light_direction = normalize(vec4(1.0,1.0,1.0,0.0));
+    vec4 light_direction = normalize(vec4(0.0,-1.0,0.0,0.0));
+    vec4 light_color = vec4(0.6877,0.96,0.6048,0.0); //http://www.rgbtool.com/
     float diffuse = dot(normalizedv_normal,light_direction);
-    frag_color = v_color * diffuse;
+    frag_color = v_color * diffuse * light_color;
 }
 """
 
@@ -79,7 +80,7 @@ glEnable(GL_DEPTH_TEST)
 glShadeModel(GL_SMOOTH)
 
 # Create the projection matrix
-projection = glm.perspective(glm.radians(45.0), 800/600, 0.1, 100.0)
+projection = glm.perspective(glm.radians(45.0), 1920/1080, 0.1, 100.0)
 
 # Create the view matrix
 view = glm.lookAt(glm.vec3(3, 3, 3), glm.vec3(0, 0, 0), glm.vec3(0, 1, 0))
@@ -93,6 +94,13 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             quit()
+        if pygame.mouse.get_pressed() == (1, 0, 0):
+            mousePosition = pygame.mouse.get_rel()
+            #glRotatef(mousePosition[1]/3, 0, 0, 0)
+            model = glm.rotate(model, glm.radians(mousePosition[0]/3), glm.vec3(0, 1, 0))
+            model = glm.rotate(model, glm.radians(mousePosition[1]/3*-1), glm.vec3(1, 0, 0))
+        else:
+            mousePosition = pygame.mouse.get_rel()
 
     # Clear the screen
     glClear(GL_COLOR_BUFFER_BIT)
@@ -128,7 +136,6 @@ while True:
     glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm.value_ptr(model))
 
     # Draw the triangle
-    model = glm.rotate(model, glm.radians(2.0), glm.vec3(1, 1, 0))
 
     glDrawArrays(GL_TRIANGLES, 0, int(len(triangle_vertices) / 10)) # 7 components per attrribute tuple)
     
