@@ -47,6 +47,8 @@ void main() {
     frag_color = v_color * diffuse * light_color;
 }
 """
+zoom = 45.0
+mousewheel = 45
 
 # Compile the shaders
 vertex_shader = glCreateShader(GL_VERTEX_SHADER)
@@ -65,7 +67,7 @@ glAttachShader(shader_program, fragment_shader)
 glLinkProgram(shader_program)
 
 mesh = Loader.Load()
-mesh.load("C:/Users/aidan_i6wswtz/Downloads/Ascii.stl")
+mesh.load("C:/Users/aidan_i6wswtz/Downloads/PIP_trashtruck.stl")
 
 triangle_vertices = mesh.vertices
 triangle_vertices = (ctypes.c_float * len(triangle_vertices))(*triangle_vertices)
@@ -80,7 +82,7 @@ glEnable(GL_DEPTH_TEST)
 glShadeModel(GL_SMOOTH)
 
 # Create the projection matrix
-projection = glm.perspective(glm.radians(45.0), 1920/1080, 0.1, 100.0)
+projection = glm.perspective(glm.radians(45.0), 1920/1080, 0.001, 10000.0)
 
 # Create the view matrix
 view = glm.lookAt(glm.vec3(3, 3, 3), glm.vec3(0, 0, 0), glm.vec3(0, 1, 0))
@@ -101,7 +103,11 @@ while True:
             model = glm.rotate(model, glm.radians(mousePosition[1]/3*-1), glm.vec3(1, 0, 0))
         else:
             mousePosition = pygame.mouse.get_rel()
-
+        if event.type == pygame.MOUSEWHEEL:
+            mousewheel += event.y
+        
+    #projection = glm.perspective(glm.radians(mousewheel), 1920/1080, 0.001, 10000.0)
+    view = glm.lookAt(glm.vec3(mousewheel, mousewheel, mousewheel), glm.vec3(0, 0, 0), glm.vec3(0, 1, 0))
     # Clear the screen
     glClear(GL_COLOR_BUFFER_BIT)
     glClear(GL_DEPTH_BUFFER_BIT)
@@ -149,3 +155,4 @@ while True:
     # Swap the buffers
     pygame.display.flip()
     clock.tick(60)
+    print(mousewheel)
