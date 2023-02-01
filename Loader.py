@@ -76,11 +76,11 @@ class Load:
         self.triangle = []
         self.points = []
         self.normal = []
+        self.count = 0
 
 
         l = struct.unpack('i',fp.read(4))[0]
 
-        count=0
 
         while True:
             try:
@@ -131,12 +131,9 @@ class Load:
                     self.vertices.append(self.normal[0])
                     self.vertices.append(self.normal[1])
                     self.vertices.append(self.normal[2])
-                    
-                #if len(tri) == 17:
 
-                self.triangle.append((len(self.vertices)-3, len(self.vertices)-2, len(self.vertices)-1))
 
-                count+=1
+                self.count += 1
                 fp.read(2)
 
                 if len(p)==0:

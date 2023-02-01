@@ -67,7 +67,7 @@ glAttachShader(shader_program, fragment_shader)
 glLinkProgram(shader_program)
 
 mesh = Loader.Load()
-mesh.load("C:/Users/aidan_i6wswtz/Downloads/PIP_trashtruck.stl")
+mesh.load("C:/Users/aidan/Downloads/General Pavel suit.stl")
 
 triangle_vertices = mesh.vertices
 triangle_vertices = (ctypes.c_float * len(triangle_vertices))(*triangle_vertices)
@@ -105,6 +105,8 @@ while True:
             mousePosition = pygame.mouse.get_rel()
         if event.type == pygame.MOUSEWHEEL:
             mousewheel += event.y
+            if mousewheel >= 1000:
+                mousewheel = 1000
         
     #projection = glm.perspective(glm.radians(mousewheel), 1920/1080, 0.001, 10000.0)
     view = glm.lookAt(glm.vec3(mousewheel, mousewheel, mousewheel), glm.vec3(0, 0, 0), glm.vec3(0, 1, 0))
@@ -145,7 +147,7 @@ while True:
 
     glDrawArrays(GL_TRIANGLES, 0, int(len(triangle_vertices) / 10)) # 7 components per attrribute tuple)
     
-    # Disable the vertex attribute
+    # Disable the vertex attributes
     glDisableVertexAttribArray(position)
     glDisableVertexAttribArray(color)
     glBindBuffer(GL_ARRAY_BUFFER, 0)
@@ -155,4 +157,4 @@ while True:
     # Swap the buffers
     pygame.display.flip()
     clock.tick(60)
-    print(mousewheel)
+    print(mesh.count)
