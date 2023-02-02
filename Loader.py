@@ -3,8 +3,9 @@ import struct
 class Load:
     def __init__(self) -> None:
         self.vertices = []
-        self.triangle = []
+        self.triangles = 0
         self.points = []
+        self.count = 0
 
     def load(self, filename):
         #file = open(filename,'rb')
@@ -73,13 +74,13 @@ class Load:
 
 
         self.vertices = []
-        self.triangle = []
-        self.points = []
+        self.triangles = 0
         self.normal = []
-        self.count = 0
+        
 
 
         l = struct.unpack('i',fp.read(4))[0]
+        self.triangles = l
 
 
         while True:
@@ -141,3 +142,8 @@ class Load:
             except EOFError: #when file is finished
                 break
         fp.close()
+    
+    def returnCount(self):
+        return self.count
+    def returnTriangles(self):
+        return self.triangles

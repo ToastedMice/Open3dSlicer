@@ -6,10 +6,13 @@ from OpenGL.arrays import vbo
 import ctypes
 import glm
 import Loader
+import threading
+import time
 
 # Initialize Pygame
 pygame.init()
 
+stop_event = threading.Event()
 # Set the screen size
 screen = pygame.display.set_mode((1920, 1080), pygame.OPENGL | pygame.DOUBLEBUF | pygame.RESIZABLE)
 
@@ -67,7 +70,19 @@ glAttachShader(shader_program, fragment_shader)
 glLinkProgram(shader_program)
 
 mesh = Loader.Load()
-mesh.load("C:/Users/aidan/Downloads/General Pavel suit.stl")
+def loadMesh():
+    mesh.load("C:/Users/aidan/Downloads/NoFace_body.stl")
+def progress():
+    while threading.active_count() > 1:
+        # Do something while the thread is running
+        try:
+            print(round(mesh.returnCount()/mesh.returnTriangles()*100, 2), "%")
+        except:
+            pass
+thread = threading.Thread(target=loadMesh)
+thread.start()
+progress()
+thread.join()
 
 triangle_vertices = mesh.vertices
 triangle_vertices = (ctypes.c_float * len(triangle_vertices))(*triangle_vertices)
@@ -107,6 +122,8 @@ while True:
             mousewheel += event.y
             if mousewheel >= 1000:
                 mousewheel = 1000
+            if mousewheel <= 0:
+                mousewheel = 0
         
     #projection = glm.perspective(glm.radians(mousewheel), 1920/1080, 0.001, 10000.0)
     view = glm.lookAt(glm.vec3(mousewheel, mousewheel, mousewheel), glm.vec3(0, 0, 0), glm.vec3(0, 1, 0))
@@ -145,7 +162,7 @@ while True:
 
     # Draw the triangle
 
-    glDrawArrays(GL_TRIANGLES, 0, int(len(triangle_vertices) / 10)) # 7 components per attrribute tuple)
+    glDrawArrays(GL_TRIANGLES, 0, int(len(triangle_vertices) / 10)) # 10 components per attrribute tuple)
     
     # Disable the vertex attributes
     glDisableVertexAttribArray(position)
@@ -157,4 +174,3 @@ while True:
     # Swap the buffers
     pygame.display.flip()
     clock.tick(60)
-    print(mesh.count)

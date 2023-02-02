@@ -64,7 +64,7 @@ colours = (
 )
 mesh = Loader.Load()
 #mesh.load("C:/Users/aidan/Downloads/Cube.stl")
-mesh.load("C:/Users/aidan/Downloads/CubeTextAsci.stl")
+mesh.load("C:/Users/aidan/Downloads/NoFace_body.stl")
 vertices = mesh.vertices
 surfaces = mesh.triangle
 print(vertices)
