@@ -8,6 +8,7 @@ import glm
 import Loader
 import threading
 import time
+import subprocess
 
 # Initialize Pygame
 pygame.init()
@@ -53,6 +54,36 @@ void main() {
 zoom = 45.0
 mousewheel = 45
 
+mesh = Loader.Load()
+
+result = subprocess.run(["FileSearcher.exe"], stdout=subprocess.PIPE, encoding="utf-8", shell=True)
+print("Selected file name Python:", result.stdout.strip())
+def loadMesh():
+    mesh.load(result.stdout.strip())
+    #mesh.load("C:/Users/aidan/Downloads/NoFace_body.stl")
+def progress():
+    while threading.active_count() > 1:
+        # Do something while the thread is running
+        myNewSurface = pygame.Surface((200, 500))
+        try:
+            print(round(mesh.returnCount()/mesh.returnTriangles()*100, 2), "%")
+            #create a new Surface
+            
+            #change its background color
+            myNewSurface.fill((255,255,255))
+
+            #blit myNewSurface onto the main screen at the position (0, 0)
+            screen.blit(myNewSurface, (1920/2, 1080/2))
+
+            #update the screen to display the changes
+            pygame.display.flip()
+        except:
+            pass
+thread = threading.Thread(target=loadMesh)
+thread.start()
+progress()
+thread.join()
+
 # Compile the shaders
 vertex_shader = glCreateShader(GL_VERTEX_SHADER)
 glShaderSource(vertex_shader, vertex_shader_source) # passing the source code as string
@@ -69,20 +100,6 @@ glAttachShader(shader_program, vertex_shader)
 glAttachShader(shader_program, fragment_shader)
 glLinkProgram(shader_program)
 
-mesh = Loader.Load()
-def loadMesh():
-    mesh.load("C:/Users/aidan/Downloads/NoFace_body.stl")
-def progress():
-    while threading.active_count() > 1:
-        # Do something while the thread is running
-        try:
-            print(round(mesh.returnCount()/mesh.returnTriangles()*100, 2), "%")
-        except:
-            pass
-thread = threading.Thread(target=loadMesh)
-thread.start()
-progress()
-thread.join()
 
 triangle_vertices = mesh.vertices
 triangle_vertices = (ctypes.c_float * len(triangle_vertices))(*triangle_vertices)
@@ -101,6 +118,8 @@ projection = glm.perspective(glm.radians(45.0), 1920/1080, 0.001, 10000.0)
 
 # Create the view matrix
 view = glm.lookAt(glm.vec3(3, 3, 3), glm.vec3(0, 0, 0), glm.vec3(0, 1, 0))
+
+rotation_matrix = glm.rotate(rotation_matrix, 45, glm.vec3(0,1,0))
 
 # Create the model matrix
 model = glm.mat4(1.0)

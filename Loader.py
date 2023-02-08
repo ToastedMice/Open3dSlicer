@@ -34,7 +34,6 @@ class Load:
 
 
     def loadTextStl(self, filename):
-        print("ASCII")
         fp = open(filename, 'r')
         self.normal = []
         for line in fp.readlines():
